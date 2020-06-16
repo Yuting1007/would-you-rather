@@ -1,39 +1,56 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a716b2bd-1082-43d9-bd17-cd3684d2d7ad/deploy-status)](https://app.netlify.com/sites/reactnd-would-you-rather/deploys)
-[![Edit reactnd-project-would-you-rather](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/james-priest/reactnd-project-would-you-rather/tree/master/?fontsize=14)
+# Code Notes
 
-# Would You Rather
+### API functions 
+getInitialData - takes in _getUsers & _getQuestions
 
-Would You Rather is a fully responsive and mobile-ready polling game that presents the user with a series of questions.
+saveQuestion - location to format data for post request
 
-![screenshot #1](docs/assets/images/wyr77-small.jpg)
+saveQuestionAnswer - location to format data for post request
 
-It's built with React, Redux, React Router, & Redux Thunk.
+This is located at */src/utils/api.js*
 
-This app is the second of three projects required for [Udacity's React Nanodegree program](https://www.udacity.com/course/react-nanodegree--nd019).
+### Actions
+**Actions are payloads of information that send data from your application to your store. They are the only source of information for the store.**
 
-- **Live Demo:** [https://reactnd-would-you-rather.netlify.com](https://reactnd-would-you-rather.netlify.com/)
-- **Code Notes:** [Step-by-step walk-though of how this project was built](https://james-priest.github.io/reactnd-project-would-you-rather/)
+The next step is to create a set of actions and action creators.
+This is located at */src/actions/*
 
-## Installation
+### Reducers
+**Reducers specify how the application's state changes in response to actions sent to the store. Remember that actions only describe what happened, but don't describe how the application's state changes.**
 
-Clone the repository, change directories, and use NPM to install the dependencies.
-
-```bash
-$ git clone https://github.com/james-priest/reactnd-project-would-you-rather.git
-$ cd reactnd-project-would-you-rather
-$ npm install
+**The reducer is a pure function that takes the previous state and an action, and returns the next state.**
+```
+(previousState, action) => nextState
 ```
 
-## Usage
+The next step is to create our reducers.
+This is located at /src/reducers/
+*/src/reducers/index.js* is where we combine the reducers into one main root reducer (combine authUser reducer, question reducer and users reducer)
 
-The project can be run with
+*/src/index.js* we also need to instantiate the redux store and pass it to Provider which warps App and acts as a Context
 
-- `npm start`
+### Middleware
+**It provides a third-party extension point between dispatching an action, and the moment it reaches the reducer.**
 
-The project can be viewed in the browser at
+This is located at */src/middleware/*
+All middleware follows this currying pattern 
+```
+const logger = (store) => (next) => (action) => {
+ // ...
+}
+```
+The first middleware function will be a logger taht will output action and state.
 
-- [http://localhost:3000](http://localhost:3000)
+One thing to note is that middleware gets run after the action creator returns an object or function but before getting sent to the reducer.
 
-## Screenshots
+Middleware also gets run in the order we apply it. Thunk needs to be run first so that it can properly handle logger.
 
-![screenshot #2](docs/assets/images/wyr76-small.jpg)
+### Initialize App Data
+We need to invoke our `handleInitialData()`  thunk action creator that was created in */src/actions/shared.js*.
+
+It uses the thunk signature of `function xyz() { return dispatch => {...} }`.
+
+Inside it invokes our Promise-based `getInitialData()` async request, then it dispatches the resulting data entities in order to fill our Redux store.
+
+We should invoke this from App since this is the entry point to our application. Now in order to invoke this we need to expose the action as props by using ‘react-redux’ `connect` method. We do this in */src/components/App.js*.
+
