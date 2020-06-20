@@ -54,3 +54,20 @@ Inside it invokes our Promise-based `getInitialData()` async request, then it di
 
 We should invoke this from App since this is the entry point to our application. Now in order to invoke this we need to expose the action as props by using ‘react-redux’ `connect` method. We do this in */src/components/App.js*.
 
+### Login & Navigation
+First we need to modify App to render the Login component if the user has not been authenticated yet. This is done in */src/components/App.js*
+
+Use the following syntax,
+```
+authYser ==== null ? <Login /> : <Route exact path = "/" component = {Home} >
+```
+Next we update the Login component to do the following:
+
+> get users to populate Login Form dropdown component
+
+> dispatch SET_AUTH_USER for login
+
+The nav component will display who is logged in. It is located in */src/components/Nav.js*.
+
+### Home View
+This is located in */src/components/Home.js*.
